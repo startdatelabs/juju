@@ -1,0 +1,7 @@
+= JuJu
+
+Gem for searching jobs based on certain parameters using JuJu API.
+
+== Install
+
+  
