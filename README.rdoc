@@ -1,7 +1,7 @@
-= JuJu
+= Juju search engine API wrapper 
 
-Gem for searching jobs based on certain parameters using JuJu API.
+Gem for searching jobs based on certain parameters using Juju API.
 
 == Install
 
-  
+  gem install juju

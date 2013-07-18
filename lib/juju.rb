@@ -1,11 +1,11 @@
 require 'active_support/all'
 require 'rest-client'
 
-class JuJu
+class Juju
   URL = "http://api.juju.com/jobs"
   
   def self.instance
-    @instance ||= JuJu.new
+    @instance ||= Juju.new
   end
 
   def self.search(params)
@@ -17,7 +17,7 @@ class JuJu
     begin
       response = RestClient.get URL, {:params => params}
     rescue RestClient::BadRequest
-      raise JuJuError, 'Request failed: invalid parameters'
+      raise JujuError, 'Request failed: invalid parameters'
     end
     parse_xml response
   end
@@ -27,24 +27,24 @@ protected
     begin
       data = Hash.from_xml(xml)['rss']['channel']
     rescue REXML::ParseException
-      raise JuJuError, 'Did not get a valid XML response from JuJu'
+      raise JujuError, 'Did not get a valid XML response from Juju'
     end
     jobs = data['item'].each {|item| item['link'].squish!}
-    JuJuResult.new(jobs, data['totalresults'], data['startindex'], data['itemsperpage'])
+    JujuResult.new(jobs, data['totalresults'], data['startindex'], data['itemsperpage'])
   end
   
   def check_required(params)
-    raise JuJuError.new('Partner ID was not provided') unless params[:partnerid]
-    raise JuJuError.new('IP Address was not provided') unless params[:ipaddress] 
-    raise JuJuError.new('User-Agent was not provided') unless params[:useragent]
-    raise JuJuError.new('Required parameters were not provided') unless params[:k] || params[:l] || params[:c]
+    raise JujuError.new('Partner ID was not provided') unless params[:partnerid]
+    raise JujuError.new('IP Address was not provided') unless params[:ipaddress] 
+    raise JujuError.new('User-Agent was not provided') unless params[:useragent]
+    raise JujuError.new('Required parameters were not provided') unless params[:k] || params[:l] || params[:c]
   end
 
 end
 
-class JuJuError < StandardError; end
+class JujuError < StandardError; end
 
-class JuJuResult < Array
+class JujuResult < Array
   attr_accessor :total, :start_index, :per_page
     
   def initialize(jobs_array, total, start_index, per_page)
