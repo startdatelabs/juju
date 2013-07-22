@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    juju (0.0.1)
+    juju (0.0.2)
       rest-client
 
 GEM
