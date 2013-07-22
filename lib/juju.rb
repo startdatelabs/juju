@@ -1,6 +1,7 @@
 require 'active_support/all'
 require 'rest-client'
 require 'action_view'
+require 'htmlentities'
 
 class Juju
   include ActionView::Helpers::SanitizeHelper
@@ -35,8 +36,8 @@ protected
   def remove_spaces_and_tags(jobs)
     jobs.each do |item|
       item['link'].squish!
-      item['title'] = strip_tags(item['title']).squish!
-      item['description'] = strip_tags(item['description']).squish!
+      item['title'] = HTMLEntities.new.decode(strip_tags(item['title']).squish!)
+      item['description'] = HTMLEntities.new.decode(strip_tags(item['description']).squish!)
     end
   end
   
