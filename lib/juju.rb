@@ -1,7 +1,10 @@
 require 'active_support/all'
 require 'rest-client'
+require 'action_view'
 
 class Juju
+  include ActionView::Helpers::SanitizeHelper
+
   URL = "http://api.juju.com/jobs"
   
   def self.instance
@@ -23,10 +26,18 @@ class Juju
 protected
   def parse_xml(xml)
     data = Hash.from_xml(xml)['rss']['channel']
-    jobs = data['item'].each {|item| item['link'].squish!}
+    jobs = remove_spaces_and_tags data['item']
     JujuResult.new(jobs, data['totalresults'], data['startindex'], data['itemsperpage'])
   rescue REXML::ParseException
     raise JujuError, 'Did not get a valid XML response from Juju'
+  end
+
+  def remove_spaces_and_tags(jobs)
+    jobs.each do |item|
+      item['link'].squish!
+      item['title'] = strip_tags(item['title']).squish!
+      item['description'] = strip_tags(item['description']).squish!
+    end
   end
   
   def check_required(params)
