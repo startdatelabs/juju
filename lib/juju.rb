@@ -23,18 +23,10 @@ class Juju
 protected
   def parse_xml(xml)
     data = Hash.from_xml(xml)['rss']['channel']
-    jobs = remove_tags_and_spaces data['item']
+    jobs = data['item'].each {|item| item['link'].squish!}
     JujuResult.new(jobs, data['totalresults'], data['startindex'], data['itemsperpage'])
   rescue REXML::ParseException
     raise JujuError, 'Did not get a valid XML response from Juju'
-  end
-
-  def remove_tags_and_spaces(jobs)
-    jobs.each do |item|
-      item['link'].squish!
-      item['title'] = strip_tags(item['title']).squish!
-      item['description'] = strip_tags(item['description']).squish!
-    end
   end
   
   def check_required(params)
