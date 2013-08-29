@@ -26,11 +26,15 @@ class Juju
    
 protected
   def parse_xml(xml)
-    data = Hash.from_xml(xml)['rss']['channel']
+    from_xml = Hash.from_xml(xml)
+    data = from_xml['rss']['channel']
     jobs = remove_spaces_and_tags data['item']
     JujuResult.new(jobs, data['totalresults'], data['startindex'], data['itemsperpage'])
   rescue REXML::ParseException
     raise JujuError, 'Did not get a valid XML response from Juju'
+  rescue => ex
+    logger = Logger.new("log/juju.log")
+    logger.info ("#{Time.now.strftime("%m/%d/%Y at %I:%M%p")}  #{ex.message} \nParsed data from Juju: \n#{from_xml.inspect}")
   end
 
   def remove_spaces_and_tags(jobs)
