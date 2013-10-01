@@ -60,7 +60,7 @@ class JujuError < StandardError; end
 class JujuResult < Array
   attr_accessor :total, :start_index, :per_page
     
-  def initialize(jobs_array, total = nil, start_index = nil, per_page = nil)
+  def initialize(jobs_array, total = 0, start_index = 0, per_page = 0)
     super(jobs_array)
     self.total = total.to_i
     self.start_index = start_index.to_i
