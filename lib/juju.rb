@@ -35,6 +35,7 @@ protected
   rescue => ex
     logger = Logger.new("log/juju.log")
     logger.info ("#{Time.now.strftime("%m/%d/%Y at %I:%M%p")}  #{ex.message} \nParsed data from Juju: \n#{from_xml.inspect}")
+    JujuResult.new([])
   end
 
   def remove_spaces_and_tags(jobs)
@@ -59,7 +60,7 @@ class JujuError < StandardError; end
 class JujuResult < Array
   attr_accessor :total, :start_index, :per_page
     
-  def initialize(jobs_array, total, start_index, per_page)
+  def initialize(jobs_array, total = nil, start_index = nil, per_page = nil)
     super(jobs_array)
     self.total = total.to_i
     self.start_index = start_index.to_i
